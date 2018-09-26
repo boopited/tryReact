@@ -30,6 +30,7 @@ class App extends Component {
     this.handleFilter = this.handleFilter.bind(this);
     this.handleAddItem = this.handleAddItem.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
+    this.handleClearComplete = this.handleClearComplete.bind(this);
     this.handleToggleAllComplete = this.handleToggleAllComplete.bind(this);
     this.handleToggleComplete = this.handleToggleComplete.bind(this);
   }
@@ -52,6 +53,11 @@ class App extends Component {
     const newItems = this.state.items.filter((item) => {
       return item.key !== key;
     });
+    this.setSource(newItems, filterItems(this.state.filter, newItems));
+  }
+
+  handleClearComplete() {
+    const newItems = filterItems('ACTIVE', this.state.items);
     this.setSource(newItems, filterItems(this.state.filter, newItems));
   }
 
@@ -119,8 +125,10 @@ class App extends Component {
           />
         </View>
         <Footer
+          count={filterItems('ACTIVE', this.state.items).length}
           filter={this.state.filter}
           onFilter={this.handleFilter}
+          onClearComplete={this.handleClearComplete}
         />
       </View>
     );
