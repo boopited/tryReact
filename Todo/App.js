@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
- Keyboard, ListView, Platform, StyleSheet, View 
+  Keyboard, ListView, Platform, StyleSheet, View,
 } from 'react-native';
 
 import Header from './Header';
@@ -41,7 +41,7 @@ class App extends Component {
 
   handleToggleComplete(key, complete) {
     const newItems = this.state.items.map((item) => {
-      if (item.key != key) return item;
+      if (item.key !== key) return item;
       return {
         ...item,
         complete, 
@@ -49,6 +49,7 @@ class App extends Component {
     });
     this.setSource(newItems, newItems);
   }
+
   handleToggleAllComplete() {
     const complete = !this.state.allComplete;
     const newItems = this.state.items.map(item => ({
@@ -69,10 +70,6 @@ class App extends Component {
       },
     ];
     this.setSource(newItems, newItems, { value: '' });
-    this.setState({
-      items: newItems,
-      value: '',
-    });
   }
 
   render() {
