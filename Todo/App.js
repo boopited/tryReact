@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Keyboard, ListView, Platform, StyleSheet, View,
+  Keyboard, ListView, Platform, StyleSheet, View, AsyncStorage, ActivityIndicator,
 } from 'react-native';
 
 import Header from './Header';
@@ -21,6 +21,7 @@ class App extends Component {
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       allComplete: false,
+      loading: true,
       filter: 'ALL',
       value: '',
       items: [],
@@ -35,12 +36,26 @@ class App extends Component {
     this.handleToggleComplete = this.handleToggleComplete.bind(this);
   }
 
+  componentWillMount() {
+    AsyncStorage.getItem('items').then((json) => {
+      try {
+        const items = JSON.parse(json);
+        this.setSource(items, items, { loading: false });
+      } catch (error) {
+        this.setState({
+          loading: false,
+        });
+      }
+    });
+  }
+
   setSource(items, itemsDataSource, otherState) {
     this.setState({
       items,
       dataSource: this.state.dataSource.cloneWithRows(itemsDataSource),
       ...otherState,
     });
+    AsyncStorage.setItem('items', JSON.stringify(items));
   }
 
   handleFilter(filter) {
@@ -130,6 +145,12 @@ class App extends Component {
           onFilter={this.handleFilter}
           onClearComplete={this.handleClearComplete}
         />
+        {this.state.loading && <View style={styles.loading}>
+          <ActivityIndicator
+            animating
+            size='large'
+          />
+        </View>}
       </View>
     );
   }
@@ -143,6 +164,16 @@ const styles = StyleSheet.create({
       ios: { paddingTop: 30 },
       android: { paddingTop: 12 },
     }),
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .2)',
   },
   content: {
     flex: 1,
