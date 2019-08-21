@@ -1,0 +1,9 @@
+node_modules/
+logs/
+
+# vim
+tags
+
+# vscode
+.vscode/
+
