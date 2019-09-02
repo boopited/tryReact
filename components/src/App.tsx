@@ -6,15 +6,54 @@ import Confirm from "./Confirm";
 interface IState {
     confirmOpen: boolean;
     confirmMessage: string;
+    confirmVisible: boolean;
+    countDown: number;
 }
 
 class App extends React.Component<{}, IState> {
+    public static getDerivedStateFromProps(props: {}, state: IState) {
+        console.log("getDerivedStateFromProps", props, state);
+        return null;
+    }
+
+    private timer: number = 0;
+    private renderCount = 0;
+
     constructor(props: {}) {
         super(props);
         this.state = {
             confirmMessage: "Please hit the confirm button",
-            confirmOpen: true,
+            confirmOpen: false,
+            confirmVisible: true,
+            countDown: 10,
         };
+    }
+    public getSnapshotBeforeUpdate(prevProps: {}, prevState: IState) {
+        this.renderCount += 1;
+        console.log("getSnapshotBeforeUpdate", prevProps, prevState, {
+            renderCount: this.renderCount
+        });
+        return this.renderCount;
+    }
+      
+    public componentDidUpdate(prevProps: {}, prevState: IState, snapshot: number) {
+        console.log("componentDidUpdate", prevProps, prevState, 
+        snapshot, {
+            renderCount: this.renderCount
+        });
+    }
+
+    public componentDidMount() {
+        this.timer = window.setInterval(() => this.handleTimerTick(), 1000);
+    }
+
+    public componentWillUnmount() {
+        clearInterval(this.timer);
+    }
+
+    public shouldComponentUpdate(nextProps: {}, nextState: IState) {
+        console.log("shouldComponentUpdate", nextProps, nextState);
+        return true;
     }
 
     public render() {
@@ -23,19 +62,21 @@ class App extends React.Component<{}, IState> {
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>
-                Edit <code>src/App.tsx</code> and save to reload.
+                    Edit <code>src/App.tsx</code> and save to reload.
                 </p>
                 <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
+                    className="App-link"
+                    href="https://reactjs.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
-                Learn React
+                    Learn React
                 </a>
             </header>
             <p>{this.state.confirmMessage}</p>
-            <button onClick={this.handleConfirmClick}>Confirm</button>
+            {this.state.confirmVisible && (
+                <button onClick={this.handleConfirmClick}>Confirm</button>
+            )}
             <Confirm
                 open={this.state.confirmOpen}
                 title="React and TypeScript" 
@@ -49,15 +90,35 @@ class App extends React.Component<{}, IState> {
         );
     }
 
+    private handleTimerTick() {
+        this.setState({
+            confirmMessage: `Please hit the confirm button ${
+                this.state.countDown
+            } secs to go`,
+            countDown: this.state.countDown - 1,
+        },
+        () => {
+            if (this.state.countDown <= 0) {
+                clearInterval(this.timer);
+                this.setState({
+                    confirmMessage: "Too late to confirm!",
+                    confirmVisible: false
+                });
+            }
+        });
+    }
+
     private handleConfirmClick = () => {
         this.setState({ confirmOpen: true });
+        clearInterval(this.timer);
     };
 
-      private handleCancelConfirmClick = () => {
+    private handleCancelConfirmClick = () => {
         this.setState({
             confirmMessage: "Cool, carry on reading!",
             confirmOpen: false
         });
+        clearInterval(this.timer);
     };
     
     private handleOkConfirmClick = () => {
@@ -65,6 +126,7 @@ class App extends React.Component<{}, IState> {
             confirmMessage: "Take a break, I'm sure you will later ...",
             confirmOpen: false
         });
+        clearInterval(this.timer);
     };
 }
 
