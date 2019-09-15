@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import logo from "./logo.svg";
 
@@ -9,8 +9,8 @@ const Header: React.SFC = () => {
             <img src={logo} className="header-logo" alt="logo" />
             <h1 className="header-title">React Shop</h1>
             <nav>
-                <Link to="/products" className="header-link">Products</Link>
-                <Link to="/admin" className="header-link">Admin</Link>
+                <NavLink to="/products" className="header-link" activeClassName="header-link-active">Products</NavLink>
+                <NavLink to="/admin" className="header-link" activeClassName="header-link-active">Admin</NavLink>
             </nav>
         </header>
     );
