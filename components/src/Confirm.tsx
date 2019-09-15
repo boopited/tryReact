@@ -11,11 +11,26 @@ interface IProps {
     onCancelClick: () => void;
 }
 
-const Confirm: React.SFC<IProps> = (props) => {
+const Confirm: React.SFC<IProps> = props => {
+    console.log("Confirm rendering");
+    
+    const [cancelClickCount, setCancelClickCount] = React.useState(0);
+
+    // React.useEffect(() => {
+    //     console.log("Confirm first rendering");
+    //     return () => {
+    //         console.log("Confirm unmounted");
+    //     };
+    // }, []);
+
     const handleCancelClick = () => {
-        props.onCancelClick();
+        const newCount = cancelClickCount + 1;
+        setCancelClickCount(newCount);
+        if (newCount >= 2) {
+            props.onCancelClick();
+        }
     };
-   
+
     const handleOkClick = () => {
         props.onOkClick();
     }; 
@@ -33,7 +48,9 @@ const Confirm: React.SFC<IProps> = (props) => {
                     <p>{props.content}</p>
                 </div>
                 <div className="confirm-buttons-container">
-                    <button className="confirm-cancel" onClick={handleCancelClick} >{props.cancelCaption}</button>
+                    <button className="confirm-cancel" onClick={handleCancelClick} >
+                        {cancelClickCount === 0 ? props.cancelCaption : "Really?"}
+                    </button>
                     <button className="confirm-ok" onClick={handleOkClick} >{props.okCaption}</button>
                 </div>
             </div>
@@ -46,4 +63,6 @@ Confirm.defaultProps = {
     okCaption: "Okay"
 }
 
-export default Confirm;
+const ConfirmMemo = React.memo(Confirm);
+
+export default ConfirmMemo;

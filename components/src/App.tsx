@@ -35,7 +35,7 @@ class App extends React.Component<{}, IState> {
         });
         return this.renderCount;
     }
-      
+
     public componentDidUpdate(prevProps: {}, prevState: IState, snapshot: number) {
         console.log("componentDidUpdate", prevProps, prevState, 
         snapshot, {
@@ -77,15 +77,17 @@ class App extends React.Component<{}, IState> {
             {this.state.confirmVisible && (
                 <button onClick={this.handleConfirmClick}>Confirm</button>
             )}
-            <Confirm
-                open={this.state.confirmOpen}
-                title="React and TypeScript" 
-                content="Are you sure you want to learn React and TypeScript?"
-                cancelCaption="No way"
-                okCaption="Yes please!"
-                onCancelClick={this.handleCancelConfirmClick}
-                onOkClick={this.handleOkConfirmClick}
-            />
+            {this.state.countDown > 0 && (
+                <Confirm
+                    open={this.state.confirmOpen}
+                    title="React and TypeScript" 
+                    content="Are you sure you want to learn React and TypeScript?"
+                    cancelCaption="No way"
+                    okCaption="Yes please!"
+                    onCancelClick={this.handleCancelConfirmClick}
+                    onOkClick={this.handleOkConfirmClick}
+                />
+            )}
             </div>
         );
     }
