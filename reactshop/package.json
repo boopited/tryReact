@@ -10,6 +10,7 @@
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",
+    "react-transition-group": "^4.3.0",
     "typescript": "3.6.3",
     "url-search-params-polyfill": "^7.0.0"
   },
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@types/react": "^16.9.2",
     "@types/react-router-dom": "^4.3.5",
+    "@types/react-transition-group": "^4.2.2",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0"

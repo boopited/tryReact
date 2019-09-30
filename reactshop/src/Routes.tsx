@@ -1,5 +1,6 @@
 import * as React from "react";
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 import AdminPage from "./AdminPage";
 import ProductsPage from "./ProductsPage";
@@ -8,12 +9,25 @@ import LoginPage from "./LoginPage";
 import NotFoundPage from "./NotFoundPage";
 import Header from "./Header";
 
-const Routes: React.SFC = () => {
-    const [loggedIn] = React.useState(true);
+const RoutesWrap: React.SFC = () => {
     return (
         <Router>
-            <div>
-                <Header />
+            <Route component={Routes} />
+        </Router>
+    );
+};
+
+const Routes: React.SFC<RouteComponentProps> = props => {
+    const [loggedIn] = React.useState(true);
+    return (
+        <div>
+            <Header />
+            <TransitionGroup>
+            <CSSTransition
+                key={props.location.key}
+                timeout={500}
+                classNames="animate"
+                >
                 <Switch>
                     <Redirect exact={true} from="/" to="/products" />
                     <Route exact={true} path="/products" component={ ProductsPage } />
@@ -26,9 +40,10 @@ const Routes: React.SFC = () => {
                     <Route path="/login" component={ LoginPage } />
                     <Route component={ NotFoundPage } />
                 </Switch>
-            </div>
-        </Router>
+            </CSSTransition>
+            </TransitionGroup>
+        </div>
     );
 };
 
-export default Routes;
+export default RoutesWrap;
